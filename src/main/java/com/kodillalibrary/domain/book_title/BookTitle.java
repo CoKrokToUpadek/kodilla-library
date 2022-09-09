@@ -1,23 +1,22 @@
-package com.kodillalibrary.domain.users;
+package com.kodillalibrary.domain.book_title;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 //import javax.persistence.*;
 
 import java.time.LocalDate;
 
-
-
 //@NoArgsConstructor
 //@AllArgsConstructor
 //@Getter
-//@Entity(name = "users")
-//public class User {
+//@Entity(name = "titles")
+//public class BookTitle {
 //    @Id
 //    @GeneratedValue
 //    private Long id;
-//    private String firstName;
-//    private String lastName;
-//    private LocalDate accountCreationDate;
+//    private String title;
+//    private String author;
+//    private LocalDate releaseDate;
 //}
