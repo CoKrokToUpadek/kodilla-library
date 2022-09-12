@@ -2,20 +2,36 @@ package com.kodillalibrary.controller;
 
 
 import com.kodillalibrary._resources.BookStatusEnum;
+import com.kodillalibrary.domain.book_copy.BookCopy;
 import com.kodillalibrary.domain.book_copy.BookCopyDTO;
 import com.kodillalibrary.domain.book_rental.BookRentalDto;
 import com.kodillalibrary.domain.book_title.BookTitleDto;
+import com.kodillalibrary.domain.users.User;
 import com.kodillalibrary.domain.users.UserDto;
+import com.kodillalibrary.mapper.UserMapper;
+import com.kodillalibrary.service.DbService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class KodillaLibraryController {
+
+    private final DbService dbService;
+    private final UserMapper userMapper;
+
+
+    @GetMapping("/get-user/{id}")
+    public UserDto getUser(@PathVariable Long id) throws Exception {
+         return userMapper.mapToUserDto(dbService.getUser(id).orElseThrow(Exception::new));
+    }
 
     @PostMapping("/add-user")
     public void addUser(UserDto userDto){
@@ -42,7 +58,7 @@ public class KodillaLibraryController {
     }
 
     @PostMapping("/rent-a-book")
-    public BookRentalDto bookCopyRental(Long userId, Long bookCopyID){
+    public BookRentalDto bookCopyRental(BookCopy userId, User bookCopyID){
         return new BookRentalDto(1L,userId,bookCopyID, LocalDate.now(),LocalDate.of(2026,6,6));
     }
 
