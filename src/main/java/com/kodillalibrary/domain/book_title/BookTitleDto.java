@@ -1,6 +1,7 @@
 package com.kodillalibrary.domain.book_title;
 
 import com.kodillalibrary.domain.book_copy.BookCopy;
+import com.kodillalibrary.domain.book_copy.BookCopyDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,5 +15,5 @@ public class BookTitleDto {
     private String title;
     private String author;
     private LocalDate releaseDate;
-    private List<BookCopy> bookCopies;
+    private List<BookCopyDto> bookCopies;
 }
