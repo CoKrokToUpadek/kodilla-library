@@ -18,6 +18,12 @@ public class UserMapper {
         return new User(userDto.getId(),userDto.getFirstName(),userDto.getLastName(), userDto.getAccountCreationDate(),bookRentalMapper.mapToBookRentalList(userDto.getBookRentals()));
     }
 
+    public User mapToNewUser(final UserDto userDto){
+        return new User(null, userDto.getFirstName(), userDto.getLastName(), null,null);
+    }
+
+
+
     public UserDto mapToUserDto(final User user){
         return new UserDto(user.getId(), user.getFirstName(),user.getLastName(),user.getAccountCreationDate(),bookRentalMapper.mapToBookRentalDToList(user.getBookRentals()));
     }

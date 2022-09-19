@@ -27,6 +27,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     runtimeOnly 'mysql:mysql-connector-java'
+    // https://mvnrepository.com/artifact/pl.fhframework.dp/fhdp-cxf-bom
+    implementation group: 'pl.fhframework.dp', name: 'fhdp-cxf-bom', version: '4.10.3'
+
 }
 
 tasks.named('test') {

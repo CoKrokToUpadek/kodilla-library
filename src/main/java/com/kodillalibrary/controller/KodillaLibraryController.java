@@ -1,8 +1,6 @@
 package com.kodillalibrary.controller;
 
-
-import com.kodillalibrary._resources.BookStatusEnum;
-import com.kodillalibrary._resources.CommunicationClass;
+import com.kodillalibrary._resources.*;
 import com.kodillalibrary.domain.book_copy.BookCopy;
 import com.kodillalibrary.domain.book_copy.BookCopyDto;
 import com.kodillalibrary.domain.book_rental.BookRentalDto;
@@ -17,7 +15,9 @@ import com.kodillalibrary.mapper.UserMapper;
 import com.kodillalibrary.service.DbService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
@@ -36,109 +36,79 @@ public class KodillaLibraryController {
 
     //works
     @GetMapping("/get-user/{id}")
-    public UserDto getUser(@PathVariable Long id) throws Exception {
-        return userMapper.mapToUserDto(dbService.getUser(id).orElseThrow(Exception::new));
+    public ResponseEntity<UserDto> getUser(@PathVariable Long id) throws FailedToFetchDataException {
+        return ResponseEntity.ok(userMapper.mapToUserDto(dbService.getUser(id).orElseThrow(FailedToFetchDataException::new)));
     }
 
     @GetMapping("/get-book-copy/{id}")
-    public BookCopyDto getBookCopy(@PathVariable Long id) throws Exception {
-        return bookCopyMapper.mapToBookCopyDto(dbService.getBookCopy(id).orElseThrow(Exception::new));
+    public ResponseEntity<BookCopyDto> getBookCopy(@PathVariable Long id) throws FailedToFetchDataException {
+        return ResponseEntity.ok(bookCopyMapper.mapToBookCopyDto(dbService.getBookCopy(id).orElseThrow(FailedToFetchDataException::new)));
     }
 
     @GetMapping("/get-book-title/{id}")
-    public BookTitleDto getBookTitle(@PathVariable Long id) throws Exception {
-        return bookTitleMapper.mapToBookTitleDto(dbService.getBookTitle(id).orElseThrow(Exception::new));
+    public ResponseEntity<BookTitleDto> getBookTitle(@PathVariable Long id) throws FailedToFetchDataException {
+        return ResponseEntity.ok(bookTitleMapper.mapToBookTitleDto(dbService.getBookTitle(id).orElseThrow(FailedToFetchDataException::new)));
     }
 
     @GetMapping("/get-book-rentals/{id}")
-    public BookRentalDto getBookRental(@PathVariable Long id) throws Exception {
-        return bookRentalMapper.mapToBookRentalDto(dbService.getBookRental(id).orElseThrow(Exception::new));
+    public ResponseEntity<BookRentalDto> getBookRental(@PathVariable Long id) throws FailedToFetchDataException {
+        return ResponseEntity.ok(bookRentalMapper.mapToBookRentalDto(dbService.getBookRental(id).orElseThrow(FailedToFetchDataException::new)));
     }
 
-    //works but doesn't throw exception
     @PostMapping(path = "/create-user", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public CommunicationClass addUser(@RequestBody UserDto userDto) {
-        User user = userMapper.mapToUser(userDto);
-        try {
-            dbService.createUser(user);
-            return new CommunicationClass("user created successfully");
-        } catch (Exception e) {
-            return new CommunicationClass("failed to create user");
-        }
+    public ResponseEntity<CommunicationClass> addUser(@RequestBody UserDto userDto) throws CorruptedDataException {
+        User user = userMapper.mapToNewUser(userDto);
+        dbService.createUser(user);
+        return ResponseEntity.ok(new CommunicationClass("user created successfully"));
+
     }
 
-
-    //works but doesn't throw exception
     @PostMapping(path = "/add-book-title", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public CommunicationClass addBookTitle(@RequestBody BookTitleDto bookTitleDto) {
+    public ResponseEntity<CommunicationClass> addBookTitle(@RequestBody BookTitleDto bookTitleDto) throws CorruptedDataException {
         BookTitle title = bookTitleMapper.mapNewTitle(bookTitleDto);
-        try {
-            dbService.createTitle(title);
-            return new CommunicationClass("title added successfully");
-        } catch (Exception e) {
-            return new CommunicationClass("failed to add title");
-        }
-
+        dbService.createTitle(title);
+        return ResponseEntity.ok(new CommunicationClass("title added successfully"));
     }
 
-    //works
+
     @PostMapping("add-book-copy")
-    public CommunicationClass addBookCopy(@RequestParam(required = true) String title) {
-        try {
-            dbService.createCopy(title);
-            return new CommunicationClass("copy added successfully");
-        } catch (Exception e) {
-            return new CommunicationClass("failed to add copy");
-        }
-
+    public ResponseEntity<CommunicationClass> addBookCopy(@RequestParam(required = true) String title) throws CorruptedDataException {
+        dbService.createCopy(title);
+        return ResponseEntity.ok(new CommunicationClass("copy added successfully"));
     }
 
-    //works
+
     @PutMapping("/edit-book-copy-status")
-    public CommunicationClass editBookCopyStatus(@RequestParam(required = true) Long id, @RequestParam(required = true) BookStatusEnum statusEnum) {
-        try {
-            dbService.changeBookCopyStatus(id, statusEnum);
-            return new CommunicationClass("book status changed successfully");
-        } catch (Exception e) {
-            return new CommunicationClass("failed to change status");
-        }
+    public ResponseEntity<CommunicationClass> editBookCopyStatus(@RequestParam(required = true) Long id, @RequestParam(required = true) BookStatusEnum statusEnum) throws CorruptedDataException {
+        dbService.changeBookCopyStatus(id, statusEnum);
+        return ResponseEntity.ok(new CommunicationClass("book status changed successfully"));
     }
 
-    //do poprawy
+
     @GetMapping("/get-available-copies")
-    public List<BookCopyDto> checkBookCopiesAvailable(@RequestParam(required = true) String title) {
-        try {
-            List<BookCopy> copies = dbService.getAvailableCopies(title);
-            if (copies.isEmpty()) {
-                return null;
-            } else {
-                return bookCopyMapper.mapToBookCopyDtoList(copies);
-            }
-        } catch (Exception e) {
-            return null;
+    public ResponseEntity<List<BookCopyDto>> checkBookCopiesAvailable(@RequestParam(required = true) String title) throws FailedToFetchDataException, EmptyListException {
+
+        List<BookCopy> copies = dbService.getAvailableCopies(title);
+        if (copies.isEmpty()) {
+            throw new EmptyListException();
+        } else {
+            return ResponseEntity.ok(bookCopyMapper.mapToBookCopyDtoList(copies));
         }
+
     }
 
     @PostMapping("/rent-a-book/")
-    public CommunicationClass bookCopyRental(@RequestParam(required = true) String bookTitle, @RequestParam(required = true) Long userId) {
-        try {
-            dbService.rentBook(userId, bookTitle);
-            return new CommunicationClass("book rented successfully");
-        } catch (Exception e) {
-            System.out.println(e);
-            return new CommunicationClass("failed to rent a book");
-        }
-
+    public ResponseEntity<CommunicationClass> bookCopyRental(@RequestParam(required = true) String bookTitle, @RequestParam(required = true) Long userId) throws FailedToFetchDataException, CorruptedDataException {
+        dbService.rentBook(userId, bookTitle);
+        return ResponseEntity.ok(new CommunicationClass("book rented successfully"));
     }
 
     @PutMapping("/return-book-copy")
-    public CommunicationClass bookCopyReturn(@RequestParam(required = true) Long bookCopyId) throws Exception {
-        if (dbService.checkStatusForReturn(bookCopyId)) {
+    public ResponseEntity<CommunicationClass> bookCopyReturn(@RequestParam(required = true) Long bookCopyId) throws FailedToFetchDataException, CorruptedDataException, EmptyListException {
+            dbService.checkStatusForReturn(bookCopyId);
             dbService.changeBookCopyStatus(bookCopyId, BookStatusEnum.AVAILABLE);
             dbService.returnBook(bookCopyId);
-            return new CommunicationClass("Book returned successfully");
-        } else {
-            return new CommunicationClass("failed to return a book");
+            return ResponseEntity.ok(new CommunicationClass("Book returned successfully"));
         }
-    }
+
 }
