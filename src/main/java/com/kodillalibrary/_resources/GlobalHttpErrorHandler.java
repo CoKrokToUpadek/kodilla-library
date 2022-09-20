@@ -16,7 +16,7 @@ public class GlobalHttpErrorHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(CorruptedDataException.class)
     public ResponseEntity<Object>handleWrongDataInputException(CorruptedDataException exception){
-        return new ResponseEntity<>("Unable to perform action. Data in request invalid", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Unable to perform action. Data in request or fields are invalid", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EmptyListException.class)
