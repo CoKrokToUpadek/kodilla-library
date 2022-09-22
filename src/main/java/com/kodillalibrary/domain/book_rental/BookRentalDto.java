@@ -1,8 +1,5 @@
 package com.kodillalibrary.domain.book_rental;
 
-
-import com.kodillalibrary.domain.book_copy.BookCopyDto;
-import com.kodillalibrary.domain.users.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

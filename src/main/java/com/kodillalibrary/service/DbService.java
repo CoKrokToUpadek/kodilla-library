@@ -15,8 +15,10 @@ import com.kodillalibrary.repository.LibraryUsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.EnumUtils;
+import org.springframework.transaction.annotation.Propagation;
 
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

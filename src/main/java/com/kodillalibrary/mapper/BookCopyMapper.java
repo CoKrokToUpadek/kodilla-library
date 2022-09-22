@@ -16,6 +16,7 @@ public class BookCopyMapper {
 
     @Autowired
     BookRentalMapper bookRentalMapper;
+    @Autowired
     DbService service;
 
    public BookCopy mapToBookCopy(final BookCopyDto bookCopyDto){

@@ -16,6 +16,8 @@ import com.kodillalibrary.service.DbService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -25,6 +27,7 @@ import java.util.List;
 @CrossOrigin("*")
 @RequestMapping("/api")
 @AllArgsConstructor
+@Transactional(propagation= Propagation.REQUIRED)
 public class KodillaLibraryController {
 
     private final DbService dbService;

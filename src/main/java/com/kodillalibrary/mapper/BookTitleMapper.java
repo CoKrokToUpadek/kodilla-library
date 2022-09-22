@@ -4,6 +4,7 @@ package com.kodillalibrary.mapper;
 import com.kodillalibrary.domain.book_copy.BookCopy;
 import com.kodillalibrary.domain.book_title.BookTitle;
 import com.kodillalibrary.domain.book_title.BookTitleDto;
+import com.kodillalibrary.service.DbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 public class BookTitleMapper {
     @Autowired
     BookCopyMapper bookCopyMapper;
+
 
     public BookTitle mapToBookTitle(final BookTitleDto bookTitleDto){
         return new BookTitle(bookTitleDto.getId(), bookTitleDto.getTitle(), bookTitleDto.getAuthor(), bookTitleDto.getReleaseDate(),bookCopyMapper.mapToBookCopyList(bookTitleDto.getBookCopies()));
