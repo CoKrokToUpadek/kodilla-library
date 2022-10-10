@@ -15,10 +15,7 @@ import com.kodillalibrary.repository.LibraryUsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.EnumUtils;
-import org.springframework.transaction.annotation.Propagation;
 
-
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +87,7 @@ public class DbService {
 
 
     public void createUser(User user) throws CorruptedDataException{
-        User newUser=new User(user.getId(), user.getFirstName(), user.getLastName(), LocalDate.now(),new ArrayList<BookRental>());
+        User newUser=new User(user.getId(), user.getFirstName(), user.getLastName(), LocalDate.now(),new ArrayList<>());
         if (newUser.getFirstName()==null || newUser.getLastName()==null) {
             throw new CorruptedDataException();
         }else {
@@ -100,7 +97,7 @@ public class DbService {
     }
 
     public void createTitle(BookTitle title) throws CorruptedDataException{
-        BookTitle newTitle=new BookTitle(title.getId(),title.getTitle(),title.getAuthor(),title.getReleaseDate(),new ArrayList<BookCopy>());
+        BookTitle newTitle=new BookTitle(title.getId(),title.getTitle(),title.getAuthor(),title.getReleaseDate(),new ArrayList<>());
         if (newTitle.getTitle()==null || newTitle.getAuthor()==null||newTitle.getReleaseDate()==null){
             throw new CorruptedDataException();
         }else {

@@ -75,21 +75,21 @@ public class KodillaLibraryController {
 
 
     @PostMapping("add-book-copy")
-    public ResponseEntity<CommunicationClass> addBookCopy(@RequestParam(required = true) String title) throws CorruptedDataException {
+    public ResponseEntity<CommunicationClass> addBookCopy(@RequestParam String title) throws CorruptedDataException {
         dbService.createCopy(title);
         return ResponseEntity.ok(new CommunicationClass("copy added successfully"));
     }
 
 
     @PutMapping("/edit-book-copy-status")
-    public ResponseEntity<CommunicationClass> editBookCopyStatus(@RequestParam(required = true) Long id, @RequestParam(required = true) BookStatusEnum statusEnum) throws CorruptedDataException {
+    public ResponseEntity<CommunicationClass> editBookCopyStatus(@RequestParam Long id, @RequestParam BookStatusEnum statusEnum) throws CorruptedDataException {
         dbService.changeBookCopyStatus(id, statusEnum);
         return ResponseEntity.ok(new CommunicationClass("book status changed successfully"));
     }
 
 
     @GetMapping("/get-available-copies")
-    public ResponseEntity<List<BookCopyDto>> checkBookCopiesAvailable(@RequestParam(required = true) String title) throws FailedToFetchDataException, EmptyListException {
+    public ResponseEntity<List<BookCopyDto>> checkBookCopiesAvailable(@RequestParam String title) throws FailedToFetchDataException, EmptyListException {
 
         List<BookCopy> copies = dbService.getAvailableCopies(title);
         if (copies.isEmpty()) {
@@ -101,13 +101,13 @@ public class KodillaLibraryController {
     }
 
     @PostMapping("/rent-a-book/")
-    public ResponseEntity<CommunicationClass> bookCopyRental(@RequestParam(required = true) String bookTitle, @RequestParam(required = true) Long userId) throws FailedToFetchDataException, CorruptedDataException {
+    public ResponseEntity<CommunicationClass> bookCopyRental(@RequestParam String bookTitle, @RequestParam Long userId) throws FailedToFetchDataException, CorruptedDataException {
         dbService.rentBook(userId, bookTitle);
         return ResponseEntity.ok(new CommunicationClass("book rented successfully"));
     }
 
     @PutMapping("/return-book-copy")
-    public ResponseEntity<CommunicationClass> bookCopyReturn(@RequestParam(required = true) Long bookCopyId) throws FailedToFetchDataException, CorruptedDataException, EmptyListException {
+    public ResponseEntity<CommunicationClass> bookCopyReturn(@RequestParam Long bookCopyId) throws FailedToFetchDataException, CorruptedDataException, EmptyListException {
             dbService.checkStatusForReturn(bookCopyId);
             dbService.changeBookCopyStatus(bookCopyId, BookStatusEnum.AVAILABLE);
             dbService.returnBook(bookCopyId);

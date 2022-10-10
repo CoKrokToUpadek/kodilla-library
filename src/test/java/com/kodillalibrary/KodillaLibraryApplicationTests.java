@@ -29,8 +29,7 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+
 
 @SpringBootTest
 class KodillaLibraryApplicationTests {
@@ -55,7 +54,7 @@ class KodillaLibraryApplicationTests {
     BookTitleMapper bookTitleMapper;
 
     @AfterEach
-    void deteleAll(){
+    void deleteAll(){
         libraryBookRentalRepository.deleteAll();
         libraryBookCopyRepository.deleteAll();
         libraryBookTitleRepository.deleteAll();
