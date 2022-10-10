@@ -4,7 +4,7 @@ import com.kodillalibrary._resources.BookStatusEnum;
 import com.kodillalibrary._resources.CorruptedDataException;
 import com.kodillalibrary._resources.EmptyListException;
 import com.kodillalibrary._resources.FailedToFetchDataException;
-import com.kodillalibrary.controller.KodillaLibraryController;
+import com.kodillalibrary.controller.LibraryBooksAdministrationController;
 import com.kodillalibrary.domain.book_copy.BookCopy;
 import com.kodillalibrary.domain.book_copy.BookCopyDto;
 import com.kodillalibrary.domain.book_rental.BookRentalDto;
@@ -27,15 +27,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 
 @SpringBootTest
-class KodillaLibraryApplicationTests {
+class LibraryBooksAdministrationControllerTests {
 
     @Autowired
-    KodillaLibraryController controller;
+    LibraryBooksAdministrationController controller;
     @Autowired
     DbService dbService;
 
@@ -62,16 +61,6 @@ class KodillaLibraryApplicationTests {
     }
 
 
-    @Test
-    void testAddUser() throws CorruptedDataException {
-        //given & when
-        controller.addUser(new UserDto(null, "testFirstName", "testLastName", null, new ArrayList<>()));
-        User user = libraryUsersRepository.findAll().get(0);
-        //then
-        Assertions.assertEquals(user.getFirstName(), "testFirstName");
-        //cleanup
-        libraryUsersRepository.deleteAll();
-    }
 
     @Test
     void testAddBookTitle() throws CorruptedDataException {
@@ -94,16 +83,7 @@ class KodillaLibraryApplicationTests {
 
     }
 
-    @Test
-    void testGetUser() throws CorruptedDataException {
-        //given & when
-        controller.addUser(new UserDto(null, "testFirstName", "testLastName", null, null));
-        User user = libraryUsersRepository.findAll().get(0);
-        //then
-        Assertions.assertEquals(user.getFirstName(), "testFirstName");
 
-
-    }
 
     @Test
     void testGetBookTitle() throws CorruptedDataException, FailedToFetchDataException {
@@ -124,59 +104,6 @@ class KodillaLibraryApplicationTests {
         ResponseEntity<BookCopyDto> copy = controller.getBookCopy(libraryBookCopyRepository.findAll().get(0).getId());
         //then
         Assertions.assertEquals( copy.getBody().getTitleId(), libraryBookTitleRepository.findAll().get(0).getId());
-
-    }
-
-    @Test
-    void testBookCopyRental() throws CorruptedDataException, FailedToFetchDataException {
-        //given & when
-        controller.addUser(new UserDto(null, "testFirstName", "testLastName", null, null));
-        controller.addBookTitle(new BookTitleDto(null, "test title", "test author", LocalDate.now(), null));
-        controller.addBookCopy("test title");
-        controller.bookCopyRental("test title",libraryUsersRepository.findAll().get(0).getId());
-        User user=libraryUsersRepository.findAll().get(0);
-        //then
-        Assertions.assertEquals(libraryBookCopyRepository.findAll().get(0).getStatus(), BookStatusEnum.RENTED.toString());
-        Assertions.assertEquals(user.getId(), libraryBookRentalRepository.findAll().get(0).getUserID().getId());
-
-    }
-
-
-    @Test
-    void testBookCopyReturn() throws CorruptedDataException, FailedToFetchDataException, EmptyListException {
-        //given & when
-        controller.addUser(new UserDto(null, "testFirstName", "testLastName", null, null));
-        controller.addBookTitle(new BookTitleDto(null, "test title", "test author", LocalDate.now(), null));
-        controller.addBookCopy("test title");
-        controller.bookCopyRental("test title",libraryUsersRepository.findAll().get(0).getId());
-        controller.bookCopyReturn(libraryBookCopyRepository.findAll().get(0).getId());
-        //then
-        Assertions.assertEquals(libraryBookCopyRepository.findAll().get(0).getStatus(), BookStatusEnum.AVAILABLE.toString());
-
-
-    }
-    @Test
-    void testGetBookRental() throws CorruptedDataException, FailedToFetchDataException {
-        //given & when
-        controller.addUser(new UserDto(null, "testFirstName", "testLastName", null, null));
-        controller.addBookTitle(new BookTitleDto(null, "test title", "test author", LocalDate.now(), null));
-        controller.addBookCopy("test title");
-        controller.bookCopyRental("test title",libraryUsersRepository.findAll().get(0).getId());
-        ResponseEntity<BookRentalDto> rental=controller.getBookRental(libraryBookRentalRepository.findAll().get(0).getId());
-        //then
-        Assertions.assertEquals(rental.getBody().getRentalDate(), LocalDate.now());
-
-    }
-
-    @Test
-    void testEditBookCopyStatus() throws CorruptedDataException {
-        //given & when
-        controller.addBookTitle(new BookTitleDto(null, "test title", "test author", LocalDate.now(), null));
-        controller.addBookCopy("test title");
-        controller.editBookCopyStatus(libraryBookCopyRepository.findAll().get(0).getId(),BookStatusEnum.LOST);
-        //then
-        Assertions.assertEquals(libraryBookCopyRepository.findAll().get(0).getStatus(), BookStatusEnum.LOST.toString());
-
 
     }
 
